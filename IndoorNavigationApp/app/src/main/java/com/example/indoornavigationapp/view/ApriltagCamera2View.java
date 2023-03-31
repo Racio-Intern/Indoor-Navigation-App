@@ -190,6 +190,7 @@ public class ApriltagCamera2View extends CameraBridgeViewBaseImpl {
 
                 mDetections = ApriltagNative.apriltag_detect(bytes, w, h);
 
+
                 if (!mDetections.isEmpty()) {
                     ArrayList<ApriltagDetection> aprilDetections = mDetections;
                     listener.onTagDetect(aprilDetections);

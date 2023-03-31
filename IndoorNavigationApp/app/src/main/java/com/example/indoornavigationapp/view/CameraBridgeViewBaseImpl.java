@@ -52,8 +52,6 @@ public abstract class CameraBridgeViewBaseImpl extends CameraBridgeViewBase {
          * @param width -  the width of the frames that will be delivered
          * @param height - the height of the frames that will be delivered
          */
-//        public void onCameraViewStarted(int width, int height);
-
         void onCameraViewStarted(int width, int height, double focalLengths);
 
         /**
@@ -290,7 +288,6 @@ public abstract class CameraBridgeViewBaseImpl extends CameraBridgeViewBase {
             case STARTED:
                 onEnterStartedState();
                 if (mListener != null) {
-//                    mListener.onCameraViewStarted(mFrameWidth, mFrameHeight);
                     mListener.onCameraViewStarted(mFrameWidth, mFrameHeight, focalLength);
                 }
                 break;
@@ -350,6 +347,7 @@ public abstract class CameraBridgeViewBaseImpl extends CameraBridgeViewBase {
         }
     }
 
+    //카메라가 90도 회전해서 보이는 문제를 해결하는 방법
     private void updateMatrix() {
         float mw = this.getWidth();
         float mh = this.getHeight();
