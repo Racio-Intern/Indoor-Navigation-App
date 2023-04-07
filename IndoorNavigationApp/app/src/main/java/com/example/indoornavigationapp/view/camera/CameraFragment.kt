@@ -50,11 +50,11 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
     private val viewModel: CameraViewModel by viewModels()
 
     init {
-        coordnateArray[0] = defaultCoords
-        coordnateArray[1] = arrowLeftCoords
-        coordnateArray[2] = arrowRightCoords
-        coordnateArray[3] = arrowForwardCoords
-        coordnateArray[4] = arrowBackwardCoords
+        arrowShapes[0] = defaultCoords
+        arrowShapes[1] = arrowLeftCoords
+        arrowShapes[2] = arrowRightCoords
+        arrowShapes[3] = arrowForwardCoords
+        arrowShapes[4] = arrowBackwardCoords
     }
 
 
@@ -205,7 +205,7 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
                     matInput.nativeObjAddr,
                     cameraMatrixData,
                     detection.p,
-                    coordnateArray[0]
+                    arrowShapes[0]
                 )
 
                 posEstiResult.id = detection.id
@@ -276,7 +276,8 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
             1.2, 0.0, -0.3
         ).toDoubleArray()
 
-        var coordnateArray = Array<DoubleArray>(5) { doubleArrayOf() }
+        /** 화살표들의 배열입니다*/
+        var arrowShapes = Array<DoubleArray>(5) { doubleArrayOf() }
     }
 
 }
