@@ -12,7 +12,7 @@ import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
-class CameraViewModel :ViewModel(){
+class CameraViewModel : ViewModel() {
 
     private val repository: MemoryTagRepository = MemoryTagRepository()
 
@@ -27,20 +27,26 @@ class CameraViewModel :ViewModel(){
         var avgY = 0.0
         var count = 0
 
-        for(est in posEstimations){
+        for (est in posEstimations) {
             val absPos = estimateAbsCamPos(est)
-            if(absPos == null) {
-                count ++
+            if (absPos == null) {
+                count++
                 continue
             }
             avgX += absPos.first
             avgY += absPos.second
+
         }
         relativePos[0] = posEstimations[0].relativeCameraPos[0]
         relativePos[1] = posEstimations[0].relativeCameraPos[1]
         relativePos[2] = posEstimations[0].relativeCameraPos[2]
         relativePos[3] = posEstimations[0].id.toDouble()
-        _estimatedPos.postValue(Pair(avgX / (posEstimations.size - count), avgY / (posEstimations.size - count)))
+        _estimatedPos.postValue(
+            Pair(
+                avgX / (posEstimations.size - count),
+                avgY / (posEstimations.size - count)
+            )
+        )
     }
 
     fun onTagDetect(detections: ArrayList<ApriltagDetection>) {
@@ -57,11 +63,12 @@ class CameraViewModel :ViewModel(){
             val distance = hypot(x, z)
             val theta = atan(z / x) - detectedTag.rot
 
-            val cos = if(theta > 0) cos(theta) else -cos(theta)
-            val sin = if(theta > 0) sin(theta) else -sin(theta)
+            val cos = if (theta > 0) cos(theta) else -cos(theta)
+            val sin = if (theta > 0) sin(theta) else -sin(theta)
             val camPosX = detectedTag.x - distance * cos
             val camPosY = detectedTag.y + distance * sin
             return Pair(camPosX, camPosY)
-        }?: throw Exception("해당하는 ID의 태그를 찾지 못했습니다.")
+        }
+        return null
     }
 }
