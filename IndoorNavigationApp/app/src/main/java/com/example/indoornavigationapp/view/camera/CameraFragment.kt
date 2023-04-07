@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import apriltag.ApriltagDetection
 import apriltag.CameraPosEstimation
@@ -45,6 +46,8 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
     private var aprilDetections: ArrayList<ApriltagDetection>? = null
     private var isCameraMatInit: Boolean = false
     private var posEstimateResults = ArrayList<CameraPosEstimation>()
+
+    private val viewModel: CameraViewModel by viewModels()
 
     init {
         coordnateArray[0] = defaultCoords
@@ -89,7 +92,7 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
         builder.setPositiveButton(
             "예"
         ) { _, _ ->
-//            findNavController().navigate(R.id.action_cameraFragment_to_entryFragment)
+            findNavController().navigate(R.id.action_cameraFragment_to_entryFragment)
         }
         builder.create().show()
 
@@ -110,6 +113,11 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
             this.setCameraIndex(0) // front-camera(1),  back-camera(0)
         }
 
+        viewModel.estimatedPos.observe(viewLifecycleOwner){
+//            binding?.relativeCoorTxt?.text = "Tag Id : ${viewModel.relativePos[3].toInt()}\n상대좌표:\nx : ${viewModel.relativePos[0]}\ny : ${viewModel.relativePos[1]}\nz : ${viewModel.relativePos[2]}"
+//            binding?.absoluteCoorTxt?.text = "절대좌표:\nx : ${it.first}\ny : ${it.second}"
+        }
+
             return binding?.root
     }
 
@@ -122,9 +130,6 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
         }
         return null
     }
-
-//    private val CAMERA_PERMISSION_REQUEST_CODE = 200
-
 
     private fun onCameraPermissionGranted() {
         val cameraViews = getCameraViewList() ?: return
@@ -169,6 +174,7 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
 
     override fun onTagDetect(aprilDetection: ArrayList<ApriltagDetection>) {
         this.aprilDetections = aprilDetection
+        viewModel.onTagDetect(aprilDetection)
     }
 
     override fun onCameraViewStarted(width: Int, height: Int, focalLength: Double) {
@@ -194,9 +200,6 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
                 cameraMatrixData[5] = focalLength[1] // Cy
                 isCameraMatInit = true
             }
-            //matResult = Mat(matInput.cols(), matInput.rows(), matInput.type())
-            //OpenCVNative.draw_polylines_on_apriltag(matInput.nativeObjAddr, detection.p, coordnateArray[viewModel.direction.ordinal])
-            //OpenCVNative.put_text(matInput.nativeObjAddr, matResult.nativeObjAddr, intArrayOf(matInput.rows()/4, matInput.cols() * 3 / 4))
             for (detection in it) {
                 val posEstiResult = OpenCVNative.draw_and_estimate_camera_position(
                     matInput.nativeObjAddr,
@@ -208,6 +211,7 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
                 posEstiResult.id = detection.id
                 posEstimateResults.add(posEstiResult)
             }
+            viewModel.onCameraFrame(posEstimateResults)
             posEstimateResults.clear()
             aprilDetections = null
         }
