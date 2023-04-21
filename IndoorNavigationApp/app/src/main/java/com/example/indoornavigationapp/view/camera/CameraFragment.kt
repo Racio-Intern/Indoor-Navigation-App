@@ -195,7 +195,7 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
 
         aprilDetections?.let {
             if (!isCameraMatInit){
-                val focalLength = OpenCVNative.find_camera_focal_length(it[0].p, intArrayOf(mSize.width, mSize.height))
+                val focalLength = OpenCVNative.find_camera_focal_center(it[0].p, intArrayOf(mSize.width, mSize.height))
                 cameraMatrixData[2] = focalLength[0] // Cx
                 cameraMatrixData[5] = focalLength[1] // Cy
                 isCameraMatInit = true
@@ -222,6 +222,7 @@ class CameraFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCall
     override fun onDestroy() {
         super.onDestroy()
         mOpenCvCameraView?.disableView()
+        aprilDetections = null
         binding = null
     }
 
