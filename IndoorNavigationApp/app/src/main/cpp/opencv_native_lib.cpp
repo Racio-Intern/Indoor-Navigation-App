@@ -46,7 +46,7 @@ Java_apriltag_OpenCVNative_draw_1polylines(JNIEnv *env, jclass clazz, jlong mat_
  */
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
-Java_apriltag_OpenCVNative_find_1camera_1focal_1length(JNIEnv *env, jclass clazz,
+Java_apriltag_OpenCVNative_find_1camera_1focal_1center(JNIEnv *env, jclass clazz,
                                                        jdoubleArray tag_corner_arr,
                                                        jintArray image_size) {
 // Get CameraPosEstimation Class
